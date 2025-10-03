@@ -1,0 +1,25 @@
+mutation CreateSignerMutation(
+  $document_id: UUID!,
+  $signer: SignerInput
+) {
+  createSigner(
+    document_id: $document_id
+    signer: $signer
+  ) {
+    public_id
+    name
+    email
+    created_at
+    action {
+      name
+    }
+    link {
+      short_link
+    }
+    user {
+      id
+      name
+      email
+    }
+  }
+}
