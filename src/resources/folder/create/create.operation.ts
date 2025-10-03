@@ -47,9 +47,13 @@ export class CreateOperation extends ResourceOperation {
         },
       },
       options: [
-        { name: 'Default', value: 'DEFAULT' },
-        { name: 'Group', value: 'GROUP' },
-        { name: 'Organization', value: 'ORGANIZATION' },
+        { name: 'Default', value: 'DEFAULT', description: "User's folders" },
+        { name: 'Group', value: 'GROUP', description: "User's Group folders" },
+        {
+          name: 'Organization',
+          value: 'ORGANIZATION',
+          description: "User's Organization folders",
+        },
       ],
       default: 'DEFAULT',
     },
