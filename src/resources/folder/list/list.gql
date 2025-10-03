@@ -1,0 +1,20 @@
+query FoldersQuery(
+  $type: FolderTypeEnum,
+  $limit: Int!,
+  $page: Int!,
+) {
+  folders(
+    type: $type,
+    limit: $limit,
+    page: $page
+  ) {
+    total
+    has_more_pages
+    data {
+      id
+      name
+      type
+      created_at
+    }
+  }
+}
