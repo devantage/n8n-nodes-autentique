@@ -1,10 +1,14 @@
 import { INodeProperties } from 'n8n-workflow';
 
 import { DocumentResource } from '../document';
+import { FolderResource } from '../folder';
 import { Resource } from '.';
 
 export class Resources {
-  private static readonly _resources: Resource[] = [new DocumentResource()];
+  private static readonly _resources: Resource[] = [
+    new DocumentResource(),
+    new FolderResource(),
+  ];
 
   public static getProperties(): INodeProperties[] {
     const properties: INodeProperties[] = [

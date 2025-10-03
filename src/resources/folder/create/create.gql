@@ -1,0 +1,14 @@
+mutation CreateFolderMutation(
+  $folder: FolderInput!,
+  $type: FolderTypeEnum
+) {
+  createFolder(
+    folder: $folder,
+    type: $type
+  ) {
+    id
+    name
+    type
+    created_at
+  }
+}
