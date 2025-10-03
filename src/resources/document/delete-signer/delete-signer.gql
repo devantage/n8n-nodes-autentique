@@ -1,0 +1,9 @@
+mutation DeleteSignerMutation(
+  document_id: UUID!,
+  public_id: UUID!
+) {
+  deleteSigner(
+    document_id: $document_id,
+    public_id: $public_id
+  )
+}
