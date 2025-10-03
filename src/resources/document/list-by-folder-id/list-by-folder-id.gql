@@ -1,0 +1,22 @@
+query DocumentsByFolderQuery(
+  $folder_id: UUID!,
+  $limit: Int,
+  $page: Int
+) {
+  documentsByFolder(
+    folder_id: $folder_id,
+    limit: $limit,
+    page: $page
+  ) {
+    total
+    has_more_pages
+    data {
+      id
+      name
+      qualified
+      sandbox
+      created_at
+      deleted_at
+    }
+  }
+}

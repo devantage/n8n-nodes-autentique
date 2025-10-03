@@ -1,0 +1,3 @@
+mutation DeleteDocumentMutation($id: UUID!) {
+  deleteDocument(id: $id)
+}

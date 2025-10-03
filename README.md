@@ -21,9 +21,24 @@ Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes
 
 These are the currently available resources and it's respective operations.
 
-### Documents
+### Document
 
 - Create (with file upload)
+- List
+- Get by ID
+- Delete
+- Add signer
+- Delete signer
+- Create link to signature
+- List by folder ID
+- Move to a folder
+
+### Folder
+
+- Create
+- List
+- Get by ID
+- Delete
 
 ## Compatibility
 
@@ -31,7 +46,7 @@ The current version is compatible with n8n installations above v1.0.0.
 
 ## Usage
 
-Provide a valid Word DOCX file binary as input for the node and it will extract and output the available metadata.
+Instructions will be written as soon as possible.
 
 ## Resources
 
@@ -41,3 +56,4 @@ Provide a valid Word DOCX file binary as input for the node and it will extract 
 ## Version history
 
 - 1.0.0 - First release
+- 1.1.0 - Added several resources and operations

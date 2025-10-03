@@ -1,52 +1,14 @@
 import {
   IExecuteFunctions,
   INodeExecutionData,
-  INodeProperties,
   INodeType,
   INodeTypeDescription,
   NodeOperationError,
 } from 'n8n-workflow';
 import { NodeConnectionTypes } from 'n8n-workflow';
 
-import { resources, resourcesOperations } from '../resources';
+import { Resources } from '../resources';
 import { getErrorMessage } from '../utils';
-
-function buildResourcesOperationProperty(): INodeProperties[] {
-  const options: INodeProperties[] = [];
-
-  for (const [resource, operations] of Object.entries(resourcesOperations)) {
-    if (!operations) continue;
-
-    for (const operation of Object.values(operations)) {
-      if (!operation) continue;
-
-      options.push({
-        displayName: 'Operation',
-        name: 'operation',
-        type: 'options',
-        noDataExpression: true,
-        displayOptions: {
-          show: {
-            resource: [resource],
-          },
-        },
-        options: [
-          {
-            name: operation.displayName,
-            value: operation.name,
-            description: operation.description,
-            action: operation.description,
-          },
-        ],
-        default: operation.name,
-      });
-
-      options.push(...operation.properties);
-    }
-  }
-
-  return options;
-}
 
 export class Autentique implements INodeType {
   public description: INodeTypeDescription = {
@@ -67,22 +29,7 @@ export class Autentique implements INodeType {
         required: true,
       },
     ],
-    properties: [
-      {
-        displayName: 'Resource',
-        name: 'resource',
-        type: 'options',
-        noDataExpression: true,
-        options: [
-          {
-            name: 'Documents',
-            value: 'documents',
-          },
-        ],
-        default: 'documents',
-      },
-      ...buildResourcesOperationProperty(),
-    ],
+    properties: Resources.getProperties(),
   };
 
   public async execute(
@@ -101,8 +48,6 @@ export class Autentique implements INodeType {
 
         if (!resource) {
           throw new Error('Resource is required');
-        } else if (!resources.includes(resource)) {
-          throw new Error(`The resource "${resource}" is not supported`);
         }
 
         const operation: string | undefined = this.getNodeParameter(
@@ -112,15 +57,11 @@ export class Autentique implements INodeType {
 
         if (!operation) {
           throw new Error('Operation is required');
-        } else if (!resourcesOperations[resource]?.[operation]) {
-          throw new Error(
-            `The resource "${resource}" does not support the operation "${operation}"`,
-          );
         }
 
-        const result: INodeExecutionData = await resourcesOperations[resource][
-          operation
-        ].execute.call(this, itemIndex);
+        const result: INodeExecutionData = await Resources.getResource(resource)
+          .getOperation(operation)
+          .execute.call(this, itemIndex);
 
         returnData.push(result);
       } catch (error: unknown) {

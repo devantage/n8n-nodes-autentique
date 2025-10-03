@@ -1,0 +1,7 @@
+mutation CreateLinkToSignatureMutation($public_id: UUID!) {
+  createLinkToSignature(
+    public_id: $public_id
+  ) {
+    short_link
+  }
+}
