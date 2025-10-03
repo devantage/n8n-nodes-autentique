@@ -24,6 +24,21 @@ These are the currently available resources and it's respective operations.
 ### Document
 
 - Create (with file upload)
+- List
+- Get by ID
+- Delete
+- Add signer
+- Delete signer
+- Create link to signature
+- List by folder ID
+- Move to a folder
+
+### Folder
+
+- Create
+- List
+- Get by ID
+- Delete
 
 ## Compatibility
 
@@ -41,3 +56,4 @@ Instructions will be written as soon as possible.
 ## Version history
 
 - 1.0.0 - First release
+- 1.1.0 - Added several resources and operations
