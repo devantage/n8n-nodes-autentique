@@ -1,0 +1,8 @@
+query FolderQuery(id: UUID!){
+  folder(id: $id) {
+    id
+    name
+    type
+    created_at
+  }
+}
