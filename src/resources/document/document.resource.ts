@@ -1,9 +1,16 @@
 import { Resource } from '../models';
 import { CreateOperation } from './create';
+import { GetByIdOperation } from './get-by-id';
 import { ListOperation } from './list';
 
 export class DocumentResource extends Resource {
   public constructor() {
-    super('document', 'Document', CreateOperation, ListOperation);
+    super(
+      'document',
+      'Document',
+      CreateOperation,
+      ListOperation,
+      GetByIdOperation,
+    );
   }
 }
