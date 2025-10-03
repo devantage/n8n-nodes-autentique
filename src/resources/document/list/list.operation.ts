@@ -67,16 +67,16 @@ export class ListOperation extends ResourceOperation {
     this: IExecuteFunctions,
     itemIndex: number,
   ): Promise<INodeExecutionData> {
-    const limit: number | undefined = this.getNodeParameter('limit', itemIndex);
+    const limit: number = this.getNodeParameter('limit', itemIndex);
 
     if (!limit) {
-      throw new Error('Limit is required and should be greater than 0');
+      throw new Error('Limit is required and must be greater than 0');
     }
 
     const page: number = this.getNodeParameter('page', itemIndex) as number;
 
     if (!page) {
-      throw new Error('Page is required and should be greater than 0');
+      throw new Error('Page is required and must be greater than 0');
     }
 
     const query: string = readFileSync(join(__dirname, 'list.gql'), 'utf8');
