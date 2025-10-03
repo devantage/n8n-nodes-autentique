@@ -1,6 +1,7 @@
 import { Resource } from '../models';
 import { AddSignerOperation } from './add-signer';
 import { CreateOperation } from './create';
+import { CreateLinkToSignatureOperation } from './create-link-to-signature';
 import { DeleteOperation } from './delete';
 import { DeleteSignerOperation } from './delete-signer';
 import { GetByIdOperation } from './get-by-id';
@@ -17,9 +18,10 @@ export class DocumentResource extends Resource {
       ListOperation,
       GetByIdOperation,
       DeleteOperation,
-      ListByFolderIdOperation,
       AddSignerOperation,
       DeleteSignerOperation,
+      CreateLinkToSignatureOperation,
+      ListByFolderIdOperation,
       MoveToFolderOperation,
     );
   }
