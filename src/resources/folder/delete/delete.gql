@@ -1,0 +1,3 @@
+mutation DeleteFolderMutation($id: UUID!) {
+  deleteFolder(id: $id)
+}
