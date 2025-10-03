@@ -57,3 +57,4 @@ Instructions will be written as soon as possible.
 
 - 1.0.0 - First release
 - 1.1.0 - Added several resources and operations
+- 1.1.1 - Fix Organization ID parameter type on Create a Document operation
