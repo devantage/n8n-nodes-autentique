@@ -6,6 +6,7 @@ import { DeleteSignerOperation } from './delete-signer';
 import { GetByIdOperation } from './get-by-id';
 import { ListOperation } from './list';
 import { ListByFolderIdOperation } from './list-by-folder-id';
+import { MoveToFolderOperation } from './move-to-folder';
 
 export class DocumentResource extends Resource {
   public constructor() {
@@ -19,6 +20,7 @@ export class DocumentResource extends Resource {
       ListByFolderIdOperation,
       AddSignerOperation,
       DeleteSignerOperation,
+      MoveToFolderOperation,
     );
   }
 }

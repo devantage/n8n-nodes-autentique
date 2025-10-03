@@ -1,0 +1,11 @@
+mutation MoveDocumentToFolderMutation(
+  document_id: UUID!,
+  current_folder_id: UUID,
+  folder_id: UUID!,
+) {
+  moveDocumentToFolder(
+    document_id: $document_id,
+    current_folder_id: $current_folder_id,
+    folder_id: $folder_id,
+  )
+}
