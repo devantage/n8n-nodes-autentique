@@ -42,7 +42,7 @@ export class CreateOperation extends ResourceOperation {
       displayName: 'Document Organization ID',
       description:
         'The ID of the organization which the created document will belong',
-      type: 'string',
+      type: 'number',
       required: false,
       displayOptions: {
         show: {
@@ -50,7 +50,7 @@ export class CreateOperation extends ResourceOperation {
           operation: [this.name],
         },
       },
-      default: '',
+      default: 0,
     },
     {
       name: 'documentFolderId',
@@ -188,13 +188,13 @@ export class CreateOperation extends ResourceOperation {
       throw new Error('Document Name is required');
     }
 
-    let documentOrganizationId: string | null | undefined =
+    let documentOrganizationId: number | null | undefined =
       this.getNodeParameter('documentOrganizationId', itemIndex) as
-        | string
+        | number
         | null
         | undefined;
 
-    if (!documentOrganizationId || !documentOrganizationId.trim().length) {
+    if (documentOrganizationId === undefined) {
       documentOrganizationId = null;
     }
 
