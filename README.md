@@ -21,7 +21,7 @@ Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes
 
 These are the currently available resources and it's respective operations.
 
-### Documents
+### Document
 
 - Create (with file upload)
 
@@ -31,7 +31,7 @@ The current version is compatible with n8n installations above v1.0.0.
 
 ## Usage
 
-Provide a valid Word DOCX file binary as input for the node and it will extract and output the available metadata.
+Instructions will be written as soon as possible.
 
 ## Resources
 

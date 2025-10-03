@@ -1,35 +1,40 @@
+import FormData from 'form-data';
 import type {
   IAllExecuteFunctions,
+  IDataObject,
   IHttpRequestOptions,
-  JsonObject,
 } from 'n8n-workflow';
 
 import { getErrorMessage } from './get-error-message.function';
 
-export type ApiResponseOrError<D extends JsonObject> =
-  | { data: D; errors?: never }
-  | { data?: never; errors: JsonObject[] };
+export type ResponseOrError<
+  D extends IDataObject,
+  E extends IDataObject = IDataObject,
+> = { data: D; errors?: never } | { data?: never; errors: E[] };
 
-export type ResumedHttpRequestOptions = Omit<IHttpRequestOptions, 'url'>;
+export type SendRequestOptions = Omit<IHttpRequestOptions, 'url'> & {
+  body: IDataObject | FormData;
+  json: boolean;
+};
 
-export async function sendRequest<D extends JsonObject>(
+export async function sendRequest<D extends IDataObject = IDataObject>(
   this: IAllExecuteFunctions,
-  requestOptions: ResumedHttpRequestOptions,
+  options: SendRequestOptions,
 ): Promise<D> {
   try {
     const url: string = 'https://api.autentique.com.br/v2/graphql';
 
     const credentialsType: string = 'autentiqueApi';
 
-    const response: ApiResponseOrError<D> =
+    const response: ResponseOrError<D> =
       await this.helpers.httpRequestWithAuthentication.call<
         IAllExecuteFunctions,
         [string, IHttpRequestOptions],
-        Promise<ApiResponseOrError<D>>
+        Promise<ResponseOrError<D>>
       >(this, credentialsType, {
         url,
         method: 'POST',
-        ...requestOptions,
+        ...options,
       });
 
     if (response.errors) {

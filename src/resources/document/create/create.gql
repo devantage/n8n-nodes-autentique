@@ -2,11 +2,15 @@ mutation CreateDocumentMutation(
   $document: DocumentInput!
   $signers: [SignerInput!]!
   $file: Upload!
+  $organization_id: UUID
+  $folder_id: UUID
 ) {
   createDocument(
     document: $document,
     signers: $signers,
-    file: $file
+    file: $file,
+    organization_id: $organization_id,
+    folder_id: $folder_id
   ) {
     id
     name
