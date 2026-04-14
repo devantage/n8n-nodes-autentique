@@ -1,1 +1,1 @@
-export { Resources } from './models';
+export { Resources } from './models/resources.class';

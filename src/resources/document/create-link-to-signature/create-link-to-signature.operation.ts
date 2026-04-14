@@ -54,7 +54,7 @@ export class CreateLinkToSignatureOperation extends ResourceOperation {
     }
 
     const query: string = readFileSync(
-      join(__dirname, 'add-signer.gql'),
+      join(__dirname, 'create-link-to-signature.gql'),
       'utf8',
     );
 

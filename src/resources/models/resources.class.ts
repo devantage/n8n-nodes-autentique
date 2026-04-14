@@ -2,7 +2,7 @@ import { INodeProperties } from 'n8n-workflow';
 
 import { DocumentResource } from '../document';
 import { FolderResource } from '../folder';
-import { Resource } from '.';
+import { Resource } from './resource.class';
 
 export class Resources {
   private static readonly _resources: Resource[] = [
@@ -10,25 +10,30 @@ export class Resources {
     new FolderResource(),
   ];
 
+  private static createResourceProperty(): INodeProperties {
+    return {
+      name: 'resource',
+      displayName: 'Resource',
+      type: 'options',
+      required: true,
+      noDataExpression: true,
+      options: [],
+      default: null,
+    };
+  }
+
   public static getProperties(): INodeProperties[] {
-    const properties: INodeProperties[] = [
-      {
-        name: 'resource',
-        displayName: 'Resource',
-        type: 'options',
-        required: true,
-        noDataExpression: true,
-        options: [],
-        default: null,
-      },
-    ];
+    const resourceProperty: INodeProperties =
+      Resources.createResourceProperty();
+
+    const properties: INodeProperties[] = [resourceProperty];
 
     for (const curResource of Resources._resources) {
-      if (properties[0].options === undefined) {
-        throw new Error(``);
+      if (!resourceProperty.options) {
+        resourceProperty.options = [];
       }
 
-      properties[0].options.push(curResource.getResourcePropertyOption());
+      resourceProperty.options.push(curResource.getResourcePropertyOption());
 
       properties.push(curResource.getOperationProperty());
 

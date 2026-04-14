@@ -39,6 +39,8 @@
     "copy:assets": "copyfiles icons/icon.svg dist/ && copyfiles -u 1 src/**/*.gql dist/",
     "build:compile": "tsc",
     "build": "npm run clean && npm run build:compile && npm run copy:assets",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
     "lint": "eslint --fix \"src/**/*.ts\"",
     "format": "prettier --write \"src/**/*.ts\""
   },
@@ -46,6 +48,7 @@
     "form-data": "^4.0.0"
   },
   "devDependencies": {
+    "@types/jest": "^30.0.0",
     "@types/node": "^20.0.0",
     "copyfiles": "^2.4.1",
     "eslint": "^9.0.0",
@@ -54,8 +57,10 @@
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-simple-import-sort": "^12.0.0",
     "eslint-plugin-unused-imports": "^4.0.0",
+    "jest": "^29.7.0",
     "prettier": "^3.0.0",
     "rimraf": "^6.0.1",
+    "ts-jest": "^29.4.9",
     "typescript": "^5.0.0",
     "typescript-eslint": "^8.0.0"
   },

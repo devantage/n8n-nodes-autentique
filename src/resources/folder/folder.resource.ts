@@ -1,4 +1,4 @@
-import { Resource } from '../models';
+import { Resource } from '../models/resource.class';
 import { CreateOperation } from './create';
 import { DeleteOperation } from './delete';
 import { GetByIdOperation } from './get-by-id';
