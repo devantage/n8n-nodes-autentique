@@ -57,4 +57,5 @@ Instructions will be written as soon as possible.
 
 - 1.0.0 - First release
 - 1.1.0 - Added several resources and operations
-- 1.1.1 - Fix mutation operations body
+- 1.1.1 - Fix organization ID parameter
+- 1.1.2 - Fix mutation operations body
