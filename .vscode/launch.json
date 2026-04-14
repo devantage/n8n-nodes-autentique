@@ -1,0 +1,22 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Build & Run",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["n8n@1.123.29", "start"],
+      "console": "integratedTerminal",
+      "autoAttachChildProcesses": true,
+      "skipFiles": ["<node_internals>/**"],
+      "env": {
+        "N8N_CUSTOM_EXTENSIONS": "${workspaceFolder}",
+        "N8N_USER_FOLDER": "${workspaceFolder}/.n8n",
+        "N8N_LOG_LEVEL": "debug"
+      },
+      "preLaunchTask": "build"
+    }
+  ]
+}

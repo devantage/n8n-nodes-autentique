@@ -1,4 +1,4 @@
-query FolderQuery(id: UUID!){
+query FolderQuery($id: UUID!) {
   folder(id: $id) {
     id
     name

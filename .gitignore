@@ -24,3 +24,6 @@
 # OS Files
 .DS_Store
 Thumbs.db
+
+# Test environment
+.n8n

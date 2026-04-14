@@ -59,11 +59,9 @@ export class CreateLinkToSignatureOperation extends ResourceOperation {
     );
 
     const body: IDataObject = {
-      operations: {
-        query,
-        variables: {
-          public_id: signerId,
-        },
+      query,
+      variables: {
+        public_id: signerId,
       },
     };
 
