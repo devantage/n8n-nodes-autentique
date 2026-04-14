@@ -52,10 +52,3 @@ Instructions will be written as soon as possible.
 
 - [n8n community nodes documentation](https://docs.n8n.io/integrations/#community-nodes)
 - [Autentique's API documentation](https://docs.autentique.com.br/api)
-
-## Version history
-
-- 1.0.0 - First release
-- 1.1.0 - Added several resources and operations
-- 1.1.1 - Fix organization ID parameter
-- 1.1.2 - Fix mutation operations body
