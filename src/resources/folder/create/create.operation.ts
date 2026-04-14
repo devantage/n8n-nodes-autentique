@@ -84,14 +84,12 @@ export class CreateOperation extends ResourceOperation {
     const query: string = readFileSync(join(__dirname, 'create.gql'), 'utf8');
 
     const body: IDataObject = {
-      operations: {
-        query,
-        variables: {
-          folder: {
-            name: folderName,
-          },
-          type: folderType,
+      query,
+      variables: {
+        folder: {
+          name: folderName,
         },
+        type: folderType,
       },
     };
 

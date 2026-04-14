@@ -101,12 +101,10 @@ export class AddSignerOperation extends ResourceOperation {
     );
 
     const body: IDataObject = {
-      operations: {
-        query,
-        variables: {
-          document_id: documentId,
-          signer: documentSigner,
-        },
+      query,
+      variables: {
+        document_id: documentId,
+        signer: documentSigner,
       },
     };
 

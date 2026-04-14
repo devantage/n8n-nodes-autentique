@@ -79,12 +79,10 @@ export class DeleteSignerOperation extends ResourceOperation {
     );
 
     const body: IDataObject = {
-      operations: {
-        query,
-        variables: {
-          document_id: documentId,
-          public_id: signerId,
-        },
+      query,
+      variables: {
+        document_id: documentId,
+        public_id: signerId,
       },
     };
 

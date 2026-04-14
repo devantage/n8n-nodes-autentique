@@ -52,11 +52,9 @@ export class DeleteOperation extends ResourceOperation {
     const query: string = readFileSync(join(__dirname, 'delete.gql'), 'utf8');
 
     const body: IDataObject = {
-      operations: {
-        query,
-        variables: {
-          id: documentId,
-        },
+      query,
+      variables: {
+        id: documentId,
       },
     };
 
