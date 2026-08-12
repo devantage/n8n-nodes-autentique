@@ -1,7 +1,6 @@
 import FormData from 'form-data';
 import { readFileSync } from 'fs';
 import type {
-  IBinaryData,
   IDataObject,
   IExecuteFunctions,
   INodeExecutionData,
@@ -247,10 +246,7 @@ export class CreateOperation extends ResourceOperation {
       throw new Error('Document Binary Property Name is required');
     }
 
-    const documentBinaryData: IBinaryData = this.helpers.assertBinaryData(
-      itemIndex,
-      documentBinaryPropertyName,
-    );
+    this.helpers.assertBinaryData(itemIndex, documentBinaryPropertyName);
 
     const binaryBuffer: Buffer = await this.helpers.getBinaryDataBuffer(
       itemIndex,
