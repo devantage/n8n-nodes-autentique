@@ -1,3 +1,4 @@
+import { ResourceOperation } from '@devantage/n8n-custom-nodes-framework';
 import { readFileSync } from 'fs';
 import type {
   IDataObject,
@@ -7,8 +8,7 @@ import type {
 } from 'n8n-workflow';
 import { join } from 'path';
 
-import { sendRequest, SendRequestOptions } from '../../../utils';
-import { ResourceOperation } from '../../models';
+import { AUTENTIQUE_GRAPHQL_PATH, autentiqueClient } from '../../../client';
 
 type DeleteResponse = { deleteDocument: boolean };
 
@@ -58,14 +58,12 @@ export class DeleteOperation extends ResourceOperation {
       },
     };
 
-    const response: DeleteResponse = await sendRequest.call<
-      IExecuteFunctions,
-      [SendRequestOptions],
-      Promise<DeleteResponse>
-    >(this, {
-      body,
-      json: true,
-    });
+    const response: DeleteResponse =
+      await autentiqueClient.graphql<DeleteResponse>(
+        this,
+        AUTENTIQUE_GRAPHQL_PATH,
+        body,
+      );
 
     return {
       json: response,

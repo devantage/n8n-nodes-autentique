@@ -1,4 +1,5 @@
-import { Resource } from '../models/resource.class';
+import { Resource } from '@devantage/n8n-custom-nodes-framework';
+
 import { AddSignerOperation } from './add-signer';
 import { CreateOperation } from './create';
 import { CreateLinkToSignatureOperation } from './create-link-to-signature';

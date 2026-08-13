@@ -1,3 +1,4 @@
+import { ResourceOperation } from '@devantage/n8n-custom-nodes-framework';
 import { readFileSync } from 'fs';
 import type {
   IDataObject,
@@ -7,9 +8,7 @@ import type {
 } from 'n8n-workflow';
 import { join } from 'path';
 
-import type { SendRequestOptions } from '../../../utils';
-import { sendRequest } from '../../../utils';
-import { ResourceOperation } from '../../models';
+import { AUTENTIQUE_GRAPHQL_PATH, autentiqueClient } from '../../../client';
 
 type MoveToFolderResponse = IDataObject & { document: IDataObject };
 
@@ -111,14 +110,12 @@ export class MoveToFolderOperation extends ResourceOperation {
       },
     };
 
-    const response: MoveToFolderResponse = await sendRequest.call<
-      IExecuteFunctions,
-      [SendRequestOptions],
-      Promise<MoveToFolderResponse>
-    >(this, {
-      body,
-      json: true,
-    });
+    const response: MoveToFolderResponse =
+      await autentiqueClient.graphql<MoveToFolderResponse>(
+        this,
+        AUTENTIQUE_GRAPHQL_PATH,
+        body,
+      );
 
     return {
       json: response.document,
