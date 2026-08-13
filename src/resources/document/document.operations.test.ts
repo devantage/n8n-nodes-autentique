@@ -1,12 +1,9 @@
+import type { ExecuteFunctionsMock } from '@devantage/n8n-custom-nodes-framework';
+import { TestUtil } from '@devantage/n8n-custom-nodes-framework';
 import { readFileSync } from 'fs';
 import type { IDataObject, INodeExecutionData } from 'n8n-workflow';
 
-import type { ExecuteFunctionsMock } from '../../test-utils/n8n';
-import {
-  createBinaryData,
-  createExecuteFunctionsMock,
-} from '../../test-utils/n8n';
-import { sendRequest } from '../../utils';
+import { AUTENTIQUE_GRAPHQL_PATH, autentiqueClient } from '../../client';
 import { AddSignerOperation } from './add-signer';
 import { CreateOperation } from './create';
 import { CreateLinkToSignatureOperation } from './create-link-to-signature';
@@ -17,7 +14,7 @@ import { ListOperation } from './list';
 import { ListByFolderIdOperation } from './list-by-folder-id';
 import { MoveToFolderOperation } from './move-to-folder';
 
-type SendRequestMock = jest.MockedFunction<typeof sendRequest>;
+type GraphqlMock = jest.SpiedFunction<typeof autentiqueClient.graphql>;
 type MockFormDataShape = {
   entries: Array<{ name: string; value: unknown; options?: unknown }>;
 };
@@ -80,25 +77,16 @@ jest.mock('fs', (): typeof import('fs') => {
   };
 });
 
-jest.mock('../../utils', (): typeof import('../../utils') => {
-  const actual: typeof import('../../utils') =
-    jest.requireActual('../../utils');
-
-  return {
-    ...actual,
-    sendRequest: jest.fn() as typeof sendRequest,
-  };
-});
-
 describe('document operations', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
 
   it('creates a document with multipart payload and binary data', async () => {
-    const sendRequestMock: SendRequestMock = jest.mocked(sendRequest);
-    sendRequestMock.mockResolvedValue({ createDocument: { id: 'doc-1' } });
-    const context: ExecuteFunctionsMock = createExecuteFunctionsMock({
+    const graphqlMock: GraphqlMock = jest
+      .spyOn(autentiqueClient, 'graphql')
+      .mockResolvedValue({ createDocument: { id: 'doc-1' } });
+    const context: ExecuteFunctionsMock = TestUtil.createExecuteFunctionsMock({
       documentName: 'Contract',
       documentOrganizationId: 42,
       documentFolderId: 'folder-1',
@@ -107,16 +95,17 @@ describe('document operations', () => {
       documentBinaryPropertyName: 'file',
     });
 
-    context.helpers.assertBinaryData.mockReturnValue(createBinaryData());
+    context.helpers.assertBinaryData.mockReturnValue(
+      TestUtil.createBinaryData(),
+    );
 
     const operation: CreateOperation = new CreateOperation('document');
     const result: INodeExecutionData = await operation.execute.call(
       context as never,
       0,
     );
-    const [requestOptions] = sendRequestMock.mock.calls[0];
-    const formData: MockFormDataShape =
-      requestOptions.body as MockFormDataShape;
+    const [, , requestBody, requestOptions] = graphqlMock.mock.calls[0];
+    const formData: MockFormDataShape = requestBody as MockFormDataShape;
 
     expect(context.helpers.assertBinaryData).toHaveBeenCalledWith(0, 'file');
     expect(context.helpers.getBinaryDataBuffer).toHaveBeenCalledWith(0, 'file');
@@ -153,7 +142,7 @@ describe('document operations', () => {
   });
 
   it('requires at least one signer when creating a document', async () => {
-    const context: ExecuteFunctionsMock = createExecuteFunctionsMock({
+    const context: ExecuteFunctionsMock = TestUtil.createExecuteFunctionsMock({
       documentName: 'Contract',
       documentSigners: JSON.stringify([]),
       documentBinaryPropertyName: 'file',
@@ -167,9 +156,10 @@ describe('document operations', () => {
   });
 
   it('normalizes optional create fields when they are not provided', async () => {
-    const sendRequestMock: SendRequestMock = jest.mocked(sendRequest);
-    sendRequestMock.mockResolvedValue({ createDocument: { id: 'doc-2' } });
-    const context: ExecuteFunctionsMock = createExecuteFunctionsMock({
+    const graphqlMock: GraphqlMock = jest
+      .spyOn(autentiqueClient, 'graphql')
+      .mockResolvedValue({ createDocument: { id: 'doc-2' } });
+    const context: ExecuteFunctionsMock = TestUtil.createExecuteFunctionsMock({
       documentName: 'Contract',
       documentOrganizationId: undefined,
       documentFolderId: '   ',
@@ -178,14 +168,15 @@ describe('document operations', () => {
       documentBinaryPropertyName: 'file',
     });
 
-    context.helpers.assertBinaryData.mockReturnValue(createBinaryData());
+    context.helpers.assertBinaryData.mockReturnValue(
+      TestUtil.createBinaryData(),
+    );
 
     const operation: CreateOperation = new CreateOperation('document');
     await operation.execute.call(context as never, 0);
 
-    const [requestOptions] = sendRequestMock.mock.calls[0];
-    const formData: MockFormDataShape =
-      requestOptions.body as MockFormDataShape;
+    const [, , requestBody] = graphqlMock.mock.calls[0];
+    const formData: MockFormDataShape = requestBody as MockFormDataShape;
 
     expect(formData.entries[0]).toEqual(
       expect.objectContaining({
@@ -340,10 +331,11 @@ describe('document operations', () => {
       expectedVariables,
       expectedFile,
     }: DocumentOperationCase): Promise<void> => {
-      const sendRequestMock: SendRequestMock = jest.mocked(sendRequest);
-      sendRequestMock.mockResolvedValue(response);
+      const graphqlMock: GraphqlMock = jest
+        .spyOn(autentiqueClient, 'graphql')
+        .mockResolvedValue(response);
       const context: ExecuteFunctionsMock =
-        createExecuteFunctionsMock(parameters);
+        TestUtil.createExecuteFunctionsMock(parameters);
 
       const result: INodeExecutionData = await operation.execute.call(
         context as never,
@@ -354,22 +346,23 @@ describe('document operations', () => {
         expect.stringContaining(expectedFile),
         'utf8',
       );
-      expect(sendRequestMock).toHaveBeenCalledWith({
-        body: {
+      expect(graphqlMock).toHaveBeenCalledWith(
+        context,
+        AUTENTIQUE_GRAPHQL_PATH,
+        {
           query: 'query body',
           variables: expectedVariables,
         },
-        json: true,
-      });
+      );
       expect(result).toEqual({ json: expectedJson, pairedItem: 0 });
     },
   );
 
   it('normalizes an empty current folder id when moving a document', async () => {
-    const sendRequestMock: SendRequestMock = jest
-      .mocked(sendRequest)
+    const graphqlMock: GraphqlMock = jest
+      .spyOn(autentiqueClient, 'graphql')
       .mockResolvedValue({ document: { id: 'doc-1' } });
-    const context: ExecuteFunctionsMock = createExecuteFunctionsMock({
+    const context: ExecuteFunctionsMock = TestUtil.createExecuteFunctionsMock({
       documentId: 'doc-1',
       currentFolderId: '   ',
       folderId: 'folder-1',
@@ -380,16 +373,13 @@ describe('document operations', () => {
     );
     await operation.execute.call(context as never, 0);
 
-    expect(sendRequestMock).toHaveBeenCalledWith({
-      body: {
-        query: 'query body',
-        variables: {
-          document_id: 'doc-1',
-          current_folder_id: null,
-          folder_id: 'folder-1',
-        },
+    expect(graphqlMock).toHaveBeenCalledWith(context, AUTENTIQUE_GRAPHQL_PATH, {
+      query: 'query body',
+      variables: {
+        document_id: 'doc-1',
+        current_folder_id: null,
+        folder_id: 'folder-1',
       },
-      json: true,
     });
   });
 
@@ -548,7 +538,7 @@ describe('document operations', () => {
       expectedMessage,
     }: DocumentValidationCase): Promise<void> => {
       const context: ExecuteFunctionsMock =
-        createExecuteFunctionsMock(parameters);
+        TestUtil.createExecuteFunctionsMock(parameters);
 
       await expect(operation.execute.call(context as never, 0)).rejects.toThrow(
         expectedMessage,

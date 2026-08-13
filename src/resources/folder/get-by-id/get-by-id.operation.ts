@@ -1,3 +1,4 @@
+import { ResourceOperation } from '@devantage/n8n-custom-nodes-framework';
 import { readFileSync } from 'fs';
 import type {
   IDataObject,
@@ -7,9 +8,7 @@ import type {
 } from 'n8n-workflow';
 import { join } from 'path';
 
-import type { SendRequestOptions } from '../../../utils';
-import { sendRequest } from '../../../utils';
-import { ResourceOperation } from '../../models';
+import { AUTENTIQUE_GRAPHQL_PATH, autentiqueClient } from '../../../client';
 
 type GetByIdApiResponse = IDataObject & { folder: IDataObject };
 
@@ -61,14 +60,12 @@ export class GetByIdOperation extends ResourceOperation {
       },
     };
 
-    const response: GetByIdApiResponse = await sendRequest.call<
-      IExecuteFunctions,
-      [SendRequestOptions],
-      Promise<GetByIdApiResponse>
-    >(this, {
-      body,
-      json: true,
-    });
+    const response: GetByIdApiResponse =
+      await autentiqueClient.graphql<GetByIdApiResponse>(
+        this,
+        AUTENTIQUE_GRAPHQL_PATH,
+        body,
+      );
 
     return {
       json: response.folder,

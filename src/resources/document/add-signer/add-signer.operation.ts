@@ -1,3 +1,4 @@
+import { ResourceOperation } from '@devantage/n8n-custom-nodes-framework';
 import { readFileSync } from 'fs';
 import type {
   IDataObject,
@@ -7,9 +8,7 @@ import type {
 } from 'n8n-workflow';
 import { join } from 'path';
 
-import type { SendRequestOptions } from '../../../utils';
-import { sendRequest } from '../../../utils';
-import { ResourceOperation } from '../../models';
+import { AUTENTIQUE_GRAPHQL_PATH, autentiqueClient } from '../../../client';
 
 type AddSignerResponse = IDataObject & { createSigner: IDataObject };
 
@@ -108,14 +107,12 @@ export class AddSignerOperation extends ResourceOperation {
       },
     };
 
-    const response: AddSignerResponse = await sendRequest.call<
-      IExecuteFunctions,
-      [SendRequestOptions],
-      Promise<AddSignerResponse>
-    >(this, {
-      body,
-      json: true,
-    });
+    const response: AddSignerResponse =
+      await autentiqueClient.graphql<AddSignerResponse>(
+        this,
+        AUTENTIQUE_GRAPHQL_PATH,
+        body,
+      );
 
     return {
       json: response.createSigner,

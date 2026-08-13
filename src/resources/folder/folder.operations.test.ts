@@ -1,15 +1,15 @@
+import type { ExecuteFunctionsMock } from '@devantage/n8n-custom-nodes-framework';
+import { TestUtil } from '@devantage/n8n-custom-nodes-framework';
 import { readFileSync } from 'fs';
 import type { IDataObject, INodeExecutionData } from 'n8n-workflow';
 
-import type { ExecuteFunctionsMock } from '../../test-utils/n8n';
-import { createExecuteFunctionsMock } from '../../test-utils/n8n';
-import { sendRequest } from '../../utils';
+import { AUTENTIQUE_GRAPHQL_PATH, autentiqueClient } from '../../client';
 import { CreateOperation } from './create';
 import { DeleteOperation } from './delete';
 import { GetByIdOperation } from './get-by-id';
 import { ListOperation } from './list';
 
-type SendRequestMock = jest.MockedFunction<typeof sendRequest>;
+type GraphqlMock = jest.SpiedFunction<typeof autentiqueClient.graphql>;
 type FolderOperationCase = {
   label: string;
   operation:
@@ -42,16 +42,6 @@ jest.mock('fs', (): typeof import('fs') => {
     readFileSync: jest.fn(
       (): string => 'query body',
     ) as unknown as typeof readFileSync,
-  };
-});
-
-jest.mock('../../utils', (): typeof import('../../utils') => {
-  const actual: typeof import('../../utils') =
-    jest.requireActual('../../utils');
-
-  return {
-    ...actual,
-    sendRequest: jest.fn() as typeof sendRequest,
   };
 });
 
@@ -129,10 +119,11 @@ describe('folder operations', () => {
       expectedVariables,
       expectedFile,
     }: FolderOperationCase): Promise<void> => {
-      const sendRequestMock: SendRequestMock = jest.mocked(sendRequest);
-      sendRequestMock.mockResolvedValue(response);
+      const graphqlMock: GraphqlMock = jest
+        .spyOn(autentiqueClient, 'graphql')
+        .mockResolvedValue(response);
       const context: ExecuteFunctionsMock =
-        createExecuteFunctionsMock(parameters);
+        TestUtil.createExecuteFunctionsMock(parameters);
 
       const result: INodeExecutionData = await operation.execute.call(
         context as never,
@@ -143,20 +134,21 @@ describe('folder operations', () => {
         expect.stringContaining(expectedFile),
         'utf8',
       );
-      expect(sendRequestMock).toHaveBeenCalledWith({
-        body: {
+      expect(graphqlMock).toHaveBeenCalledWith(
+        context,
+        AUTENTIQUE_GRAPHQL_PATH,
+        {
           query: 'query body',
           variables: expectedVariables,
         },
-        json: true,
-      });
+      );
       expect(result).toEqual({ json: expectedJson, pairedItem: 0 });
     },
   );
 
   it('validates required folder inputs', async () => {
     const operation: CreateOperation = new CreateOperation('folder');
-    const context: ExecuteFunctionsMock = createExecuteFunctionsMock({
+    const context: ExecuteFunctionsMock = TestUtil.createExecuteFunctionsMock({
       folderName: '   ',
       folderType: 'DEFAULT',
     });
@@ -230,7 +222,7 @@ describe('folder operations', () => {
       expectedMessage,
     }: FolderValidationCase): Promise<void> => {
       const context: ExecuteFunctionsMock =
-        createExecuteFunctionsMock(parameters);
+        TestUtil.createExecuteFunctionsMock(parameters);
 
       await expect(operation.execute.call(context as never, 0)).rejects.toThrow(
         expectedMessage,

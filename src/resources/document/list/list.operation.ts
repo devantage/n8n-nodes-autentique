@@ -1,3 +1,4 @@
+import { ResourceOperation } from '@devantage/n8n-custom-nodes-framework';
 import { readFileSync } from 'fs';
 import type {
   IDataObject,
@@ -7,8 +8,7 @@ import type {
 } from 'n8n-workflow';
 import { join } from 'path';
 
-import { sendRequest, SendRequestOptions } from '../../../utils';
-import { ResourceOperation } from '../../models';
+import { AUTENTIQUE_GRAPHQL_PATH, autentiqueClient } from '../../../client';
 
 type ListResponse = IDataObject & {
   documents: {
@@ -89,14 +89,11 @@ export class ListOperation extends ResourceOperation {
       },
     };
 
-    const response: ListResponse = await sendRequest.call<
-      IExecuteFunctions,
-      [SendRequestOptions],
-      Promise<ListResponse>
-    >(this, {
+    const response: ListResponse = await autentiqueClient.graphql<ListResponse>(
+      this,
+      AUTENTIQUE_GRAPHQL_PATH,
       body,
-      json: true,
-    });
+    );
 
     return {
       json: response.documents,

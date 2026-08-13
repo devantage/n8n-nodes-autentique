@@ -1,3 +1,4 @@
+import { ResourceOperation } from '@devantage/n8n-custom-nodes-framework';
 import FormData from 'form-data';
 import { readFileSync } from 'fs';
 import type {
@@ -9,9 +10,7 @@ import type {
 } from 'n8n-workflow';
 import { join } from 'path';
 
-import type { SendRequestOptions } from '../../../utils';
-import { sendRequest } from '../../../utils';
-import { ResourceOperation } from '../../models';
+import { AUTENTIQUE_GRAPHQL_PATH, autentiqueClient } from '../../../client';
 
 type CreateResponse = IDataObject & { createDocument: IDataObject };
 
@@ -285,15 +284,13 @@ export class CreateOperation extends ResourceOperation {
       contentType: documentBinaryData.mimeType,
     });
 
-    const response: CreateResponse = await sendRequest.call<
-      IExecuteFunctions,
-      [SendRequestOptions],
-      Promise<CreateResponse>
-    >(this, {
-      headers: body.getHeaders(),
-      body,
-      json: false,
-    });
+    const response: CreateResponse =
+      await autentiqueClient.graphql<CreateResponse>(
+        this,
+        AUTENTIQUE_GRAPHQL_PATH,
+        body,
+        { headers: body.getHeaders(), json: false },
+      );
 
     return {
       json: response.createDocument,
