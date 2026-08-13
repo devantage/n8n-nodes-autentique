@@ -10,8 +10,7 @@ This is an n8n community node for Autentique's API.
 [Operations](#operations)  
 [Compatibility](#compatibility)  
 [Usage](#usage)
-[Resources](#resources)  
-[Version history](#version-history)
+[Resources](#resources)
 
 ## Installation
 
