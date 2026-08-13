@@ -10,6 +10,7 @@ export type ExecuteFunctionsMock = {
   getNodeParameter: MockFunction<[string]>;
   helpers: {
     assertBinaryData: MockFunction<[number, string], IBinaryData>;
+    getBinaryDataBuffer: MockFunction<[number, string], Promise<Buffer>>;
     httpRequestWithAuthentication: MockFunction<
       [string, unknown],
       Promise<unknown>
@@ -28,6 +29,13 @@ export function createExecuteFunctionsMock(
         [number, string],
         IBinaryData
       >,
+      getBinaryDataBuffer: jest.fn(
+        async (_itemIndex: number, _propertyName: string): Promise<Buffer> => {
+          return new Promise((resolve: (value: Buffer) => void) => {
+            resolve(Buffer.from('test file'));
+          });
+        },
+      ) as MockFunction<[number, string], Promise<Buffer>>,
       httpRequestWithAuthentication: jest.fn() as MockFunction<
         [string, unknown],
         Promise<unknown>

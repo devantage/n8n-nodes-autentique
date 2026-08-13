@@ -119,6 +119,7 @@ describe('document operations', () => {
       requestOptions.body as MockFormDataShape;
 
     expect(context.helpers.assertBinaryData).toHaveBeenCalledWith(0, 'file');
+    expect(context.helpers.getBinaryDataBuffer).toHaveBeenCalledWith(0, 'file');
     expect(readFileSync).toHaveBeenCalledWith(
       expect.stringContaining('create.gql'),
       'utf8',
