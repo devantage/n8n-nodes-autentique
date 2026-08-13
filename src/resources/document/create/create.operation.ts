@@ -252,6 +252,11 @@ export class CreateOperation extends ResourceOperation {
       documentBinaryPropertyName,
     );
 
+    const binaryBuffer: Buffer = await this.helpers.getBinaryDataBuffer(
+      itemIndex,
+      documentBinaryPropertyName,
+    );
+
     const query: string = readFileSync(join(__dirname, 'create.gql'), 'utf8');
 
     const body: FormData = new FormData();
@@ -275,7 +280,7 @@ export class CreateOperation extends ResourceOperation {
 
     body.append('map', JSON.stringify({ file: ['variables.file'] }));
 
-    body.append('file', Buffer.from(documentBinaryData.data, 'base64'), {
+    body.append('file', binaryBuffer, {
       filename: documentBinaryData.fileName,
       contentType: documentBinaryData.mimeType,
     });
